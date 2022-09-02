@@ -1,15 +1,15 @@
 # Locadora de veículos
 
-# Requisitos
+## Requisitos
 
 É necessário ter o Docker e docker-compose instalado e configurado na máquina.
 
-# Rodar
+## Rodar
 
 > $ docker-compose up
-# To-do
+## To-do
 
-# Notes
+## Notas
 
 Rodar migrations: 
 
