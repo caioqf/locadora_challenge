@@ -1,9 +1,17 @@
-#extra
-.env
+#custom
+node_modules
+.vscode
+dist
 
 # compiled output
 /dist
 /node_modules
+
+# dotenv environment variables file
+.env
+.env.test
+.env.dev
+.env.prod
 
 # Logs
 logs
