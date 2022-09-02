@@ -6,6 +6,10 @@
 
 ## Rodar
 
+- Clonar o repositorio
+- Entrar na pasta do projeto
+- Rodar o comando abaixo:
+
 > $ docker-compose up
 ## To-do
 

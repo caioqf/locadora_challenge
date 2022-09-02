@@ -1,9 +1,10 @@
 FROM node:17-alpine as node_base
 
-WORKDIR /home/node
-
 RUN apk update
 
+WORKDIR /home/node
+
+RUN chown -R 1000:1000 /home/node
 
 # dev
 FROM node_base as development

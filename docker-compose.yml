@@ -36,7 +36,7 @@ services:
     entrypoint:
       - 'sh'
       - '-c'
-      - 'npm run start:dev'
+      - 'npm run migrate-up && npm run start:dev' # rodar migrations e startar api
     depends_on:
       db_locadora:
         condition: service_healthy
