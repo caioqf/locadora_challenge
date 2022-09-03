@@ -1,30 +1,58 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+  UseFilters,
+} from '@nestjs/common';
 import { LocadoraService } from './locadora.service';
 import { CreateLocadoraDto } from './dto/create-locadora.dto';
 import { UpdateLocadoraDto } from './dto/update-locadora.dto';
+import { Locadora } from './entities/locadora.entity';
+import { ServiceError } from '../errors/service-error';
 
 @Controller('locadora')
 export class LocadoraController {
   constructor(private readonly locadoraService: LocadoraService) {}
 
   @Post()
-  create(@Body() createLocadoraDto: CreateLocadoraDto) {
-    return this.locadoraService.create(createLocadoraDto);
+  async create(@Body() createLocadoraDto: CreateLocadoraDto) {
+    const res = await this.locadoraService.create(createLocadoraDto);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
   @Get()
-  findAll() {
-    return this.locadoraService.findAll();
+  async findAll(): Promise<Locadora[] | ServiceError> {
+    const res = await this.locadoraService.findAll();
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.locadoraService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const res = await this.locadoraService.findOne(+id);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLocadoraDto: UpdateLocadoraDto) {
-    return this.locadoraService.update(+id, updateLocadoraDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateLocadoraDto: UpdateLocadoraDto,
+  ) {
+    const res = await this.locadoraService.update(+id, updateLocadoraDto);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
   @Delete(':id')

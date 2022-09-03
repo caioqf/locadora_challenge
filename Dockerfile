@@ -2,7 +2,7 @@ FROM node:17-alpine as node_base
 
 RUN apk update
 
-WORKDIR /home/node
+WORKDIR /home
 
 RUN chown -R 1000:1000 /home/node
 
