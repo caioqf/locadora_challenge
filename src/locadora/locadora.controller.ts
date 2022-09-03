@@ -9,6 +9,9 @@ import {
   HttpException,
   HttpStatus,
   UseFilters,
+  Put,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { LocadoraService } from './locadora.service';
 import { CreateLocadoraDto } from './dto/create-locadora.dto';
@@ -18,7 +21,7 @@ import { ServiceError } from '../errors/service-error';
 
 @Controller('locadora')
 export class LocadoraController {
-  constructor(private readonly locadoraService: LocadoraService) {}
+  constructor(private readonly locadoraService: LocadoraService) { }
 
   @Post()
   async create(@Body() createLocadoraDto: CreateLocadoraDto) {
@@ -36,16 +39,17 @@ export class LocadoraController {
     return res;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const res = await this.locadoraService.findOne(+id);
     if (res instanceof ServiceError)
       throw new HttpException(res.message, res.code);
-    return res;
+    return new Locadora(res);
   }
 
-  @Patch(':id')
-  update(
+  @Put(':id')
+  async update(
     @Param('id') id: string,
     @Body() updateLocadoraDto: UpdateLocadoraDto,
   ) {
@@ -56,7 +60,10 @@ export class LocadoraController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.locadoraService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const res = await this.locadoraService.remove(+id);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 }

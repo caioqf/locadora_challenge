@@ -4,26 +4,27 @@ import { UpdateLocadoraDto } from './dto/update-locadora.dto';
 import { InjectKnex, Knex } from 'nestjs-knex';
 import { ServiceError } from '../errors/service-error';
 import { Locadora } from './entities/locadora.entity';
+
 @Injectable()
 export class LocadoraService {
   constructor(
     @InjectKnex()
     private readonly knex: Knex,
-  ) {}
+  ) { }
 
   async create(createLocadoraDto: CreateLocadoraDto) {
     try {
       await this.knex('general.locator').insert({
-        loc_email: createLocadoraDto.email,
-        loc_cnpj: createLocadoraDto.cnpj,
-        loc_corporate_name: createLocadoraDto.corporateName,
-        loc_trade_name: createLocadoraDto.tradeName,
-        loc_telephone: createLocadoraDto.telephone,
+        email: createLocadoraDto.email,
+        cnpj: createLocadoraDto.cnpj,
+        corporate_name: createLocadoraDto.corporateName,
+        trade_name: createLocadoraDto.tradeName,
+        telephone: createLocadoraDto.telephone,
       });
 
       return;
     } catch (error) {
-      if (error.code === '23505')
+      if (error.code === '23505') // baseado na tabela de erros do postgre: erro indica duplicacao de campo unico 
         return new ServiceError(400, 'Locadora ja cadastrada');
 
       return new ServiceError(402, 'Ocorreu um erro.');
@@ -48,7 +49,7 @@ export class LocadoraService {
     try {
       const locator = await this.knex('general.locator')
         .where({
-          loc_id: id,
+          id: id,
         })
         .first();
 
@@ -62,28 +63,43 @@ export class LocadoraService {
     }
   }
 
-  async update(id: number, updateLocadoraDto: UpdateLocadoraDto) {
-    return `This action updates a #${id} locadora`;
+  async update(id: number, updateLocadoraDto: UpdateLocadoraDto): Promise<Locadora | ServiceError | any> {
+    try {
+      const res = await this.knex('general.locator')
+        .update({
+          email: updateLocadoraDto?.email,
+          telephone: updateLocadoraDto?.telephone
+        })
+        .where({
+          id: id
+        })
+
+      return
+    } catch (error) {
+      return new ServiceError(500, 'Erro ao atualizar.')
+    }
+
   }
 
   async remove(id: number) {
     try {
       const exists = await this.findOne(id);
 
-      if (!exists) {
-        return new ServiceError(403, 'Locadora inexistente');
+      if (exists instanceof ServiceError) {
+        return new ServiceError(exists.code, exists.message);
       }
 
-      await this.knex('general.locator').delete('*').where({
-        loc_id: id,
-      });
+      await this.knex('general.locator')
+        .delete('*')
+        .where({
+          id: id,
+        });
 
       return HttpStatus.OK;
     } catch (error) {
-      console.error(error);
-      return new HttpException(
-        'Erro ao deletar locadora.',
+      return new ServiceError(
         HttpStatus.INTERNAL_SERVER_ERROR,
+        'Erro ao deletar locadora.'
       );
     }
   }
