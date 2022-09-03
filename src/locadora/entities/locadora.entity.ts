@@ -3,8 +3,8 @@ import { Exclude } from "class-transformer";
 export class Locadora {
   @Exclude()
   id: number;
-  tradeName: string;
-  corporateName: string;
+  trade_name: string;
+  corporate_name: string;
   cnpj: string;
   email: string;
   telephone: string;

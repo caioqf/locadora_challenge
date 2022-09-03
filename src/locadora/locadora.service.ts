@@ -14,16 +14,13 @@ export class LocadoraService {
 
   async create(createLocadoraDto: CreateLocadoraDto) {
     try {
-      await this.knex('general.locator').insert({
-        email: createLocadoraDto.email,
-        cnpj: createLocadoraDto.cnpj,
-        corporate_name: createLocadoraDto.corporateName,
-        trade_name: createLocadoraDto.tradeName,
-        telephone: createLocadoraDto.telephone,
-      });
+      const locator = await this.knex('general.locator')
+        .insert(createLocadoraDto)
+        .returning('*')
 
-      return;
+      return locator[0]
     } catch (error) {
+
       if (error.code === '23505') // baseado na tabela de erros do postgre: erro indica duplicacao de campo unico 
         return new ServiceError(400, 'Locadora ja cadastrada');
 
@@ -31,7 +28,7 @@ export class LocadoraService {
     }
   }
 
-  async findAll(): Promise<Locadora[] | ServiceError> {
+  async findAll() {
     try {
       const allLocators = await this.knex('general.locator').select('*');
 
@@ -95,7 +92,10 @@ export class LocadoraService {
           id: id,
         });
 
-      return HttpStatus.OK;
+      return {
+        statusCode: HttpStatus.OK,
+        message: "Deleted."
+      }
     } catch (error) {
       return new ServiceError(
         HttpStatus.INTERNAL_SERVER_ERROR,

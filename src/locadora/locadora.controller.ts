@@ -3,12 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpException,
-  HttpStatus,
-  UseFilters,
   Put,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -23,6 +20,7 @@ import { ServiceError } from '../errors/service-error';
 export class LocadoraController {
   constructor(private readonly locadoraService: LocadoraService) { }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   async create(@Body() createLocadoraDto: CreateLocadoraDto) {
     const res = await this.locadoraService.create(createLocadoraDto);

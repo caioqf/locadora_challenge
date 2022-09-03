@@ -5,11 +5,11 @@ export class CreateLocadoraDto {
 
   @IsNotEmpty()
   @IsString()
-  tradeName: string;
+  trade_name: string;
 
   @IsNotEmpty()
   @IsString()
-  corporateName: string;
+  corporate_name: string;
 
   @IsNotEmpty()
   @IsString()
