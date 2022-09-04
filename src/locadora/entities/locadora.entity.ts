@@ -1,4 +1,5 @@
 import { Exclude } from "class-transformer";
+import { Address } from "../../types/Address";
 
 export class Locadora {
   @Exclude()
@@ -8,7 +9,7 @@ export class Locadora {
   cnpj: string;
   email: string;
   telephone: string;
-
+  adress: Address
   constructor(partial: Partial<Locadora>) {
     Object.assign(this, partial);
   }

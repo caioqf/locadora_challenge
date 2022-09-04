@@ -1,5 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
-
+import { IsEmail, IsNotEmpty, IsObject, IsString } from "class-validator";
 
 export class CreateLocadoraDto {
 
@@ -22,4 +21,8 @@ export class CreateLocadoraDto {
   @IsNotEmpty()
   @IsString()
   telephone: string;
+
+  @IsNotEmpty()
+  @IsObject()
+  address
 }

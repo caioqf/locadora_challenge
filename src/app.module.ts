@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { LocadoraModule } from './locadora/locadora.module';
 import { KnexModule } from 'nestjs-knex';
+import { ManufacterModule } from './manufacturers/manufacturers.module';
+import { VehicleModelModule } from './vehicle_model/vehicle_model.module';
+import { VehicleModule } from './vehicle/vehicle.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,8 +27,11 @@ import { KnexModule } from 'nestjs-knex';
       },
     }),
     LocadoraModule,
+    ManufacterModule,
+    VehicleModelModule,
+    VehicleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

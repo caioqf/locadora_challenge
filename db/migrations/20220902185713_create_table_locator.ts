@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('cnpj', 14).unique().notNullable();
     table.string('email', 50).notNullable();
     table.string('telephone', 11);
+    table.jsonb('address').notNullable()
   });
 }
 

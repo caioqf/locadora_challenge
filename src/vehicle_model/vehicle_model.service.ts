@@ -1,34 +1,30 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CreateLocadoraDto } from './dto/create-locadora.dto';
-import { UpdateLocadoraDto } from './dto/update-locadora.dto';
+import { CreateVehicleModelDto } from './dto/create-vehicle_model.dto';
+import { UpdateVehicleModelDto } from './dto/update-vehicle_model.dto';
 import { InjectKnex, Knex } from 'nestjs-knex';
 import { ServiceError } from '../errors/service-error';
-import { Locadora } from './entities/locadora.entity';
+import { VehicleModel } from './entities/vehicle_model.entity';
 
 @Injectable()
-export class LocadoraService {
+export class VehicleModelService {
   constructor(
     @InjectKnex()
     private readonly knex: Knex,
   ) { }
 
-  async create(createLocadoraDto: CreateLocadoraDto) {
+  async create(createVehicleModelDto: CreateVehicleModelDto) {
     try {
-      const locator = await this.knex('general.locator')
+      const model = await this.knex('general.model')
         .insert({
-          trade_name: createLocadoraDto.trade_name,
-          corporate_name: createLocadoraDto.corporate_name,
-          cnpj: createLocadoraDto.cnpj,
-          email: createLocadoraDto.email,
-          telephone: createLocadoraDto.telephone,
-          address: createLocadoraDto.address,
+          name: createVehicleModelDto.name,
+          FK_manufacturers: createVehicleModelDto.manufacturer
         })
         .returning('*')
 
-      return locator[0]
+      return model[0]
     } catch (error) {
       if (error.code === '23505') // baseado na tabela de erros do postgre: erro indica duplicacao de campo unico 
-        return new ServiceError(400, 'Locadora ja cadastrada');
+        return new ServiceError(400, 'Modelo ja cadastrado');
 
       return new ServiceError(402, 'Ocorreu um erro.');
     }
@@ -36,11 +32,7 @@ export class LocadoraService {
 
   async findAll() {
     try {
-      const allLocators = await this.knex('general.locator').select('*');
-
-      if (!allLocators) {
-        return new ServiceError(400, 'Dados não encontrados');
-      }
+      const allLocators = await this.knex('general.model').select('*');
 
       return allLocators;
     } catch (error) {
@@ -50,34 +42,34 @@ export class LocadoraService {
 
   async findOne(id: number) {
     try {
-      const locator = await this.knex('general.locator')
+      const model = await this.knex('general.model')
         .where({
           id: id,
         })
         .first();
 
-      if (!locator || locator === undefined) {
-        return new ServiceError(400, 'Locadora não encontrada');
+      if (!model || model === undefined) {
+        return new ServiceError(400, 'Modelo não encontrado');
       }
 
-      return locator;
+      return model;
     } catch (error) {
       return new ServiceError(403, 'Ocorreu um erro');
     }
   }
 
-  async update(id: number, updateLocadoraDto: UpdateLocadoraDto): Promise<Locadora | ServiceError | any> {
+  async update(id: number, updateVehicleModelDto: UpdateVehicleModelDto): Promise<VehicleModel | ServiceError | any> {
     try {
-      const res = await this.knex('general.locator')
+      const res = await this.knex('general.model')
         .update({
-          email: updateLocadoraDto?.email,
-          telephone: updateLocadoraDto?.telephone
+          name: updateVehicleModelDto?.name,
         })
         .where({
           id: id
         })
+        .returning('*')
 
-      return
+      return res
     } catch (error) {
       return new ServiceError(500, 'Erro ao atualizar.')
     }
@@ -92,7 +84,7 @@ export class LocadoraService {
         return new ServiceError(exists.code, exists.message);
       }
 
-      await this.knex('general.locator')
+      await this.knex('general.model')
         .delete('*')
         .where({
           id: id,
@@ -105,7 +97,7 @@ export class LocadoraService {
     } catch (error) {
       return new ServiceError(
         HttpStatus.INTERNAL_SERVER_ERROR,
-        'Erro ao deletar locadora.'
+        'Erro ao deletar vehicle_model.'
       );
     }
   }
