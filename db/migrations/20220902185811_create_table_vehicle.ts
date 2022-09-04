@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('chassis', 20).unique().notNullable();
     table.date('date_creation');
     table.jsonb('log');
+    table.jsonb('locators_history')
     table
       .bigInteger('FK_veiculo_montadora')
       .references('id')
