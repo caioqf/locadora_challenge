@@ -5,15 +5,14 @@ export async function up(knex: Knex): Promise<void> {
     table.increments('id').primary();
     table.integer('doors_number').notNullable();
     table.string('color', 10);
-    table.integer('year');
-    table.integer('year_fabrication');
+    table.string('year_model');
+    table.string('year_fabrication');
+    table.date('date_creation');
     table.string('plate', 10).unique().notNullable();
     table.string('chassis', 20).unique().notNullable();
-    table.date('date_creation');
-    table.jsonb('log');
-    table.jsonb('locators_history')
+    table.boolean('isLocated').defaultTo(false);
     table
-      .bigInteger('FK_veiculo_montadora')
+      .bigInteger('FK_vehicle_manufacturers')
       .references('id')
       .inTable('general.manufacturers')
       .notNullable();

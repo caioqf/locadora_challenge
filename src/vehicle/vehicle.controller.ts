@@ -1,34 +1,60 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, Put } from '@nestjs/common';
 import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { ServiceError } from '../errors/service-error';
 
 @Controller('vehicle')
 export class VehicleController {
-  constructor(private readonly vehicleService: VehicleService) {}
+  constructor(private readonly vehicleService: VehicleService) { }
 
   @Post()
-  create(@Body() createVehicleDto: CreateVehicleDto) {
-    return this.vehicleService.create(createVehicleDto);
+  async create(@Body() createVehicleDto: CreateVehicleDto) {
+    const res = await this.vehicleService.create(createVehicleDto);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
   @Get()
-  findAll() {
-    return this.vehicleService.findAll();
+  async findAll() {
+    const res = await this.vehicleService.findAll();
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vehicleService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const res = await this.vehicleService.findOne(+id);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVehicleDto: UpdateVehicleDto) {
-    return this.vehicleService.update(+id, updateVehicleDto);
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateVehicleDto: UpdateVehicleDto) {
+    const res = await this.vehicleService.update(+id, updateVehicleDto);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vehicleService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const res = await this.vehicleService.remove(+id);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
+
+  @Get('/log/:id')
+  async getVehicleLog(@Param('id') id: string) {
+    return this.vehicleService.getVehicleLog(+id);
+  }
+
+  //   @Get('/log')
+  //   async getVehiclesLogs() {
+  //     return this.vehicleService.getAllLogs();
+  //   }
 }

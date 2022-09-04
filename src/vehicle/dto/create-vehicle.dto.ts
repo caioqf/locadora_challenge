@@ -12,18 +12,22 @@ export class CreateVehicleDto {
 
   @IsNotEmpty()
   @IsString()
-  year: string;
+  model_year: string;
 
   @IsNotEmpty()
   @IsString()
   fabrication_year: string;
 
   @IsNotEmpty()
+  register_date: string;
+
+  @IsNotEmpty()
   @IsString()
   plate: string;
 
   @IsNotEmpty()
-  creation_date: string;
+  @IsString()
+  chassis: string;
 
   @IsNotEmpty()
   @IsNumber()

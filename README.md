@@ -10,7 +10,17 @@
 - Entrar na pasta do projeto
 - Rodar o comando abaixo:
 
-> $ docker-compose up
+> $ docker-compose up --build
+
+## Reiniciar
+
+- É necessário remover os volumes do banco para proxima seed rodar sem erros de constraints: 
+
+> $ docker-compose down -v
+
+depois..
+> $ docker-compose up --build
+
 ## To-do
 
 ## Notas
