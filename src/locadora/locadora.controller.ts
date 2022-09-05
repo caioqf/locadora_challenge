@@ -30,7 +30,7 @@ export class LocadoraController {
   }
 
   @Get()
-  async findAll(): Promise<Locadora[] | ServiceError> {
+  async findAll() {
     const res = await this.locadoraService.findAll();
     if (res instanceof ServiceError)
       throw new HttpException(res.message, res.code);
@@ -60,6 +60,14 @@ export class LocadoraController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const res = await this.locadoraService.remove(+id);
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
+  }
+
+  @Get('/logs/:id')
+  async getVehiclesQuantity(@Param('id') id: string) {
+    const res = await this.locadoraService.getVehiclesQuantity(+id);
     if (res instanceof ServiceError)
       throw new HttpException(res.message, res.code);
     return res;

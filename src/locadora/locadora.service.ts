@@ -109,4 +109,36 @@ export class LocadoraService {
       );
     }
   }
+
+  async getVehiclesQuantity(id: number) {
+
+    const locator = await this.findOne(id)
+
+    const vehiclesInfo = await this.knex('general.vehicle as v')
+      .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator')
+      .join('general.manufacturers as m', 'm.id', '=', 'FK_vehicle_manufacturers')
+      .join('general.model as mo', 'mo.id', '=', 'FK_vehicle_model')
+      .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator')
+      .where({
+        FK_vehicle_locator: id
+      })
+
+    const logs = vehiclesInfo.map((element) => {
+
+      return {
+        manufacturer: element.manufacturer,
+        model: element.model,
+        quantity: 4
+      }
+
+    })
+
+    const info = {
+      locator: locator.corporate_name,
+      vehicles: logs
+    }
+
+    return info
+  }
 }
+

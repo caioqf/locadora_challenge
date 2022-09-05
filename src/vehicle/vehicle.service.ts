@@ -16,11 +16,24 @@ export class VehicleService {
   async create(createVehicleDto: CreateVehicleDto) {
     try {
       const locator = await this.knex('general.vehicle')
-        .insert(createVehicleDto)
+        .insert({
+          doors_number: createVehicleDto.doors_number,
+          color: createVehicleDto.color,
+          year_model: createVehicleDto.year_model,
+          year_fabrication: createVehicleDto.year_fabrication,
+          date_creation: createVehicleDto.date_creation,
+          plate: createVehicleDto.plate,
+          chassis: createVehicleDto.chassis,
+          FK_vehicle_manufacturers: createVehicleDto.vehicle_manufacturer,
+          FK_vehicle_model: createVehicleDto.vehicle_model,
+          FK_vehicle_locator: createVehicleDto.vehicle_locator
+        })
         .returning('*')
 
       return locator[0]
     } catch (error) {
+      console.log(error);
+
       if (error.code === '23505') // baseado na tabela de erros do postgre: erro indica duplicacao de campo unico 
         return new ServiceError(400, 'Veículo ja cadastrado');
 
@@ -34,7 +47,7 @@ export class VehicleService {
         .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator')
         .join('general.manufacturers as m', 'm.id', '=', 'FK_vehicle_manufacturers')
         .join('general.model as mo', 'mo.id', '=', 'FK_vehicle_model')
-        .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator');
+        .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator')
 
       if (!allVehicles) {
         return new ServiceError(400, 'Dados não encontrados');
@@ -50,9 +63,13 @@ export class VehicleService {
 
   async findOne(id: number) {
     try {
-      const vehicle = await this.knex('general.vehicle')
+      const vehicle = await this.knex('general.vehicle as v')
+        .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator')
+        .join('general.manufacturers as m', 'm.id', '=', 'FK_vehicle_manufacturers')
+        .join('general.model as mo', 'mo.id', '=', 'FK_vehicle_model')
+        .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator')
         .where({
-          id: id,
+          'v.id': id,
         })
         .first();
 
@@ -62,6 +79,8 @@ export class VehicleService {
 
       return vehicle;
     } catch (error) {
+      console.log(error);
+
       return new ServiceError(403, 'Ocorreu um erro');
     }
   }
@@ -179,9 +198,9 @@ export class VehicleService {
 
       const vehicleInfo = {
         id: element.id,
-        locadora: element.locator,
-        montadora: 'Wolkswagen',
-        modelo: 'GOL',
+        locator: element.locator,
+        manufacturer: element.manufacturer,
+        model: element.model,
         log: vehicleLOG
       }
 

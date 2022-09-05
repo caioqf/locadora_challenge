@@ -4,7 +4,7 @@ export class CreateVehicleDto {
 
   @IsNumber()
   @IsNotEmpty()
-  doorsNumber: number;
+  doors_number: number;
 
   @IsNotEmpty()
   @IsString()
@@ -12,14 +12,14 @@ export class CreateVehicleDto {
 
   @IsNotEmpty()
   @IsString()
-  model_year: string;
+  year_model: string;
 
   @IsNotEmpty()
   @IsString()
-  fabrication_year: string;
+  year_fabrication: string;
 
   @IsNotEmpty()
-  register_date: string;
+  date_creation: string;
 
   @IsNotEmpty()
   @IsString()
@@ -31,13 +31,14 @@ export class CreateVehicleDto {
 
   @IsNotEmpty()
   @IsNumber()
-  manufacturer: number;
+  vehicle_locator: number;
 
   @IsNotEmpty()
   @IsNumber()
-  model: number;
+  vehicle_model: number;
 
   @IsNotEmpty()
   @IsNumber()
-  current_locator: number;
+  vehicle_manufacturer: number;
+
 }
