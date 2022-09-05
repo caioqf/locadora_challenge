@@ -4,6 +4,7 @@ import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { InjectKnex, Knex } from 'nestjs-knex';
 import { ServiceError } from '../errors/service-error';
 import { Vehicle } from './entities/vehicle.entity';
+import { TransferVehicleDTO } from './dto/transfer-vehicle.dto';
 
 @Injectable()
 export class VehicleService {
@@ -29,7 +30,11 @@ export class VehicleService {
 
   async findAll() {
     try {
-      const allVehicles = await this.knex('general.vehicle').select('*');
+      const allVehicles = await this.knex('general.vehicle as v')
+        .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator')
+        .join('general.manufacturers as m', 'm.id', '=', 'FK_vehicle_manufacturers')
+        .join('general.model as mo', 'mo.id', '=', 'FK_vehicle_model')
+        .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator');
 
       if (!allVehicles) {
         return new ServiceError(400, 'Dados não encontrados');
@@ -37,6 +42,8 @@ export class VehicleService {
 
       return allVehicles;
     } catch (error) {
+      console.log(error);
+
       return new ServiceError(400, 'Ocorreu um erro');
     }
   }
@@ -100,8 +107,102 @@ export class VehicleService {
     }
   }
 
-  async getVehicleLog(id: number) {
-    await this.knex('general')
-      .select('view')
+  async transferVehicleLocator(transferVehicleDTO: TransferVehicleDTO) {
+
+    const transaction = await this.knex.transaction()
+
+    try {
+
+      const vehicle = await this.findOne(transferVehicleDTO.vehicle_id)
+
+      if (parseInt(vehicle.FK_vehicle_locator) === transferVehicleDTO.new_locator_id) {
+        return new ServiceError(400, "Veículo ja se encontra nesta locadora.")
+      }
+
+      // atualiza referencia de locadora na tabela de veiculo
+      await this.knex('general.vehicle')
+        .update({
+          FK_vehicle_locator: transferVehicleDTO.new_locator_id
+        })
+        .where({
+          id: transferVehicleDTO.vehicle_id
+        })
+
+      // atualiza ultimo log
+      await this.knex('general.vehicle_locator')
+        .update({
+          transefer_date: this.knex.fn.now(),
+        })
+        .where({
+          FK_vehicle: transferVehicleDTO.vehicle_id,
+          transefer_date: null
+        })
+
+      // insere novo log
+      await this.knex('general.vehicle_locator')
+        .insert({
+          FK_vehicle: transferVehicleDTO.vehicle_id,
+          FK_vehicle_locator: transferVehicleDTO.new_locator_id,
+          register_date: this.knex.fn.now(),
+          transefer_date: null
+        })
+
+      await transaction.commit()
+
+      return {
+        statusCode: 200,
+        message: `Transeferido veículo ${vehicle.id} para locadora ${transferVehicleDTO.new_locator_id} com sucesso!`
+      }
+    } catch (error) {
+
+      // cancela a transação caso erro
+      await transaction.rollback()
+
+      return new ServiceError(400, 'Erro ao realizar transferência de veículo.')
+
+    }
+
+  }
+
+  async getVehiclesLog() {
+
+    const vehicles = await this.findAll()
+
+    if (vehicles instanceof ServiceError) return vehicles
+
+    const data = vehicles.map(async element => {
+
+      const vehicleLOG = await this.knex('general.vehicle_locator')
+        .where({
+          FK_vehicle: element.id
+        })
+
+      const vehicleInfo = {
+        id: element.id,
+        locadora: element.locator,
+        montadora: 'Wolkswagen',
+        modelo: 'GOL',
+        log: vehicleLOG
+      }
+
+      return vehicleInfo
+    });
+
+    return Promise.all(data)
+
   }
 }
+
+[
+  {
+    id: 1,
+    locadora: 'XPTO',
+    montadora: 'Wolkswagen',
+    modelo: 'GOL',
+    log: [
+      {
+
+      }
+    ]
+  }
+]

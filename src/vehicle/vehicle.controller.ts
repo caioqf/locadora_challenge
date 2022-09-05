@@ -3,6 +3,7 @@ import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { ServiceError } from '../errors/service-error';
+import { TransferVehicleDTO } from './dto/transfer-vehicle.dto';
 
 @Controller('vehicle')
 export class VehicleController {
@@ -48,13 +49,22 @@ export class VehicleController {
     return res;
   }
 
-  @Get('/log/:id')
-  async getVehicleLog(@Param('id') id: string) {
-    return this.vehicleService.getVehicleLog(+id);
+  @Get('/logs/all')
+  async getLog() {
+    const res = await this.vehicleService.getVehiclesLog();
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code);
+    return res;
   }
 
-  //   @Get('/log')
-  //   async getVehiclesLogs() {
-  //     return this.vehicleService.getAllLogs();
-  //   }
+  @Patch('/transfer')
+  async transferVehicle(@Body() transferVehicleDTO: TransferVehicleDTO,) {
+    const res = await this.vehicleService.transferVehicleLocator(transferVehicleDTO)
+    if (res instanceof ServiceError)
+      throw new HttpException(res.message, res.code)
+    return res
+  }
+
+
+
 }
