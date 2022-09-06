@@ -115,7 +115,7 @@ export class LocadoraService {
     const locator = await this.findOne(id)
 
     const vehiclesInfo = await this.knex('general.vehicle as v')
-      .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator')
+      .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator', 'm.id as manu_id', 'mo.id as mod_id')
       .join('general.manufacturers as m', 'm.id', '=', 'FK_vehicle_manufacturers')
       .join('general.model as mo', 'mo.id', '=', 'FK_vehicle_model')
       .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator')
@@ -123,19 +123,27 @@ export class LocadoraService {
         FK_vehicle_locator: id
       })
 
-    const logs = vehiclesInfo.map((element) => {
+    const logs = vehiclesInfo.map(async (element) => {
+
+      const ocurrences = await this.knex.raw(`
+      SELECT v."FK_vehicle_model", m."name" as model, COUNT(*) as  Occurences
+      FROM "general".vehicle v
+      join "general".model m on v."FK_vehicle_model" = m.id 
+      where v."id" = ${element.id} and "FK_vehicle_locator" = ${id}
+      GROUP BY v."FK_vehicle_model",  m.name
+      `)
 
       return {
         manufacturer: element.manufacturer,
         model: element.model,
-        quantity: 4
+        quantity: ocurrences.rows[0].occurences
       }
 
     })
 
     const info = {
       locator: locator.corporate_name,
-      vehicles: logs
+      vehicles: await Promise.all(logs)
     }
 
     return info

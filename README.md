@@ -1,4 +1,4 @@
-# Locadora de veículos
+# Locadoras de veículos
 
 ## Requisitos
 
@@ -14,17 +14,13 @@
 
 ## Reiniciar
 
-- É necessário remover os volumes do banco para proxima seed rodar sem erros de constraints: 
+As seeds nao são desfeitas quando o container do docker é destruido, então para rodar o projeto novamente, é necessário seguir os seguintes passos:
 
 > $ docker-compose down -v
 
 depois..
 > $ docker-compose up --build
 
-## To-do
-
 ## Notas
 
-Rodar migrations: 
 
-- knex migrate:make teste --env=dev --knexfile=db/knexfile.ts

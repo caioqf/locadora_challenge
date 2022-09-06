@@ -44,7 +44,21 @@ export class VehicleService {
   async findAll() {
     try {
       const allVehicles = await this.knex('general.vehicle as v')
-        .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator')
+        .select(
+          'v.id',
+          'doors_number',
+          'color',
+          'year_model',
+          'year_fabrication',
+          'date_creation',
+          'plate',
+          'chassis',
+          'm.name as manufacturer',
+          'm.id as manufacturar_id',
+          'mo.name as model',
+          'mo.id as model_id',
+          'l.corporate_name as locator'
+        )
         .join('general.manufacturers as m', 'm.id', '=', 'FK_vehicle_manufacturers')
         .join('general.model as mo', 'mo.id', '=', 'FK_vehicle_model')
         .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator')
@@ -64,7 +78,21 @@ export class VehicleService {
   async findOne(id: number) {
     try {
       const vehicle = await this.knex('general.vehicle as v')
-        .select('v.id', 'doors_number', 'color', 'year_model', 'year_fabrication', 'date_creation', 'plate', 'chassis', 'm.name as manufacturer', 'mo.name as model', 'l.corporate_name as locator')
+        .select(
+          'v.id',
+          'doors_number',
+          'color',
+          'year_model',
+          'year_fabrication',
+          'date_creation',
+          'plate',
+          'chassis',
+          'm.name as manufacturer',
+          'm.id as manufacturar_id',
+          'mo.name as model',
+          'mo.id as modeç_id',
+          'l.corporate_name as locator'
+        )
         .join('general.manufacturers as m', 'm.id', '=', 'FK_vehicle_manufacturers')
         .join('general.model as mo', 'mo.id', '=', 'FK_vehicle_model')
         .join('general.locator as l', 'l.id', '=', 'FK_vehicle_locator')
@@ -211,17 +239,3 @@ export class VehicleService {
 
   }
 }
-
-[
-  {
-    id: 1,
-    locadora: 'XPTO',
-    montadora: 'Wolkswagen',
-    modelo: 'GOL',
-    log: [
-      {
-
-      }
-    ]
-  }
-]
