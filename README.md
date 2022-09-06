@@ -21,6 +21,30 @@ As seeds nao são desfeitas quando o container do docker é destruido, então pa
 depois..
 > $ docker-compose up --build
 
-## Notas
+## Endpoints relevantes:
 
+- Transferir o veículo de locadora
+````
+PATCH /vehicle/transfer
 
+Body:
+
+{
+	"vehicle_id": 2,
+	"new_locator_id": 1
+}
+````
+
+- LOG todos veículos
+````
+GET /vehicle/logs/all
+````
+
+- LOG quantidade veículos por locadora
+````
+GET /locadora/logs/all
+````
+
+## Nota
+
+Infelizmente nem todos os requisitos do arquivo foram contemplados. Mas eis o que foi possivel fazer. 
