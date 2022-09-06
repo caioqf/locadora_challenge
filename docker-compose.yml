@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+
+  db_locadora:
+    container_name: db_locadora
+    hostname: db_locadora
+    image: postgres:14.5-alpine
+    ports:
+      - 5432:5432
+    user: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=sf41746teste #todo transofrmar em env's
+      - POSTGRES_DB=locadora_sf4
+
+  api_locadora:
+    container_name: api_locadora
+    hostname: api_locadora
+    ports: 
+      - 3331:3331
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./:/home/node
+    env_file:
+      - .env
+    working_dir: '/home/node'
+    entrypoint:
+      - 'sh'
+      - '-c'
+      - 'npm run migrate-up && npm run seed-run && npm run start:dev' # rodar migrations e startar api
+    depends_on:
+      db_locadora:
+        condition: service_healthy
+      
