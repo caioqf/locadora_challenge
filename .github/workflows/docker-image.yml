@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: login to docker hub
-      run: docker login --username ${{env.DOCKER_USER}} --password-stdin ${{env.DOCKER_PASS}} 
+      run: docker login --username "${{env.DOCKER_USER}}" --password-stdin ${{env.DOCKER_PASS}} 
       
     - uses: actions/checkout@v3
     - name: Publish the Docker Image
