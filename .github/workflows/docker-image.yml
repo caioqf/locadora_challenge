@@ -1,0 +1,25 @@
+name: Publish Docker image to Docker Hub
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Docker image
+      run: docker build . --file Dockerfile --tag locadora:${github.sha}@latest
+      
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Publish the Docker Image
+      run: docker push locadora:${github.sha}@latest
+
