@@ -18,24 +18,29 @@ Elas podem ser encontradas no link abaixo:
 ## Rodando o projeto
 
 - Clonar o repositorio
-> $ git clone https://github.com/caioqf/locadora_challenge.git
+````
+$ git clone https://github.com/caioqf/locadora_challenge.git
+````
 
 - Entrar na pasta do projeto
-> $ cd locadora_challenge
+````
+$ cd locadora_challenge
+````
 
 - Rodar o comando abaixo:
-
-> $ docker-compose up --build
-
+````
+$ docker-compose up --build
+````
 ## Reiniciar
 
 As _seeds_ (população do banco de dados) nao são desfeitas quando o container do docker é parado, então para rodar o projeto novamente, é necessário seguir os seguintes passos:
-
-> $ docker-compose down -v
-
-depois..
-> $ docker-compose up --build
-
+````
+$ docker-compose down -v
+````
+depois...
+````
+$ docker-compose up --build
+````
 ## Endpoints relevantes:
 
 - Transferir o veículo de locadora
