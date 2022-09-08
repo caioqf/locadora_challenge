@@ -36,7 +36,7 @@ jobs:
     - name: login to docker hub
       env: 
         docker_user: ${{secrets.DOCKER_USER}}
-        docker_pass: ${{secret.DOCKER_PASS}
+        docker_pass: ${{secrets.DOCKER_PASS}
       run: docker login --username "${{docker_user}}" --password-stdin ${{docker_pass}} 
       
     - uses: actions/checkout@v3
