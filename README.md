@@ -2,19 +2,34 @@
 
 ## Requisitos
 
-É necessário ter o Docker e docker-compose instalado e configurado na máquina.
+É necessário ter o Docker e docker-compose instalado* e configurado na máquina.
 
-## Rodar
+> ***Obs:** na versão 3.2.1 em diante do Docker, o docker-compose se integrou ao CLI da ferramenta por padrão. Então, se você está usando esta versão em diante, não precisará necessariamente ter o plugin docker-compose instalado. 
+Como até o momento há retro-compatibilidade entre os comandos, usaremos nesta documentação a sintaxe antiga **(docker-compose)**.
+
+# Imagens
+
+Uma imagem do projeto é automaticamente gerada e publicada no Docker Hub quando um **Push** é feito ou um **Pull Request** aceito na branch _main_ usando o CI/CD do GitHub Actions.
+
+Elas podem ser encontradas no link abaixo:
+
+> https://hub.docker.com/repository/docker/caioqf/locadora_challenge
+
+## Rodando o projeto
 
 - Clonar o repositorio
+> $ git clone https://github.com/caioqf/locadora_challenge.git
+
 - Entrar na pasta do projeto
+> $ cd locadora_challenge
+
 - Rodar o comando abaixo:
 
 > $ docker-compose up --build
 
 ## Reiniciar
 
-As seeds nao são desfeitas quando o container do docker é destruido, então para rodar o projeto novamente, é necessário seguir os seguintes passos:
+As _seeds_ (população do banco de dados) nao são desfeitas quando o container do docker é parado, então para rodar o projeto novamente, é necessário seguir os seguintes passos:
 
 > $ docker-compose down -v
 
@@ -44,7 +59,3 @@ GET /vehicle/logs/all
 ````
 GET /locadora/logs/all
 ````
-
-## Nota
-
-Infelizmente nem todos os requisitos do arquivo foram contemplados. Mas eis o que foi possivel fazer. 
