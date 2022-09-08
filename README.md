@@ -63,6 +63,8 @@ GET /locadora/logs/all
 ## TO-DO
 
 - Melhorar o CI/CD do projeto
+	- Personalizar os gatilhos do pipeline:
+		- Apenas iniciar quando hover mudanças em alguns arquivos específicos.
 	- Diversificar as imagens em ambientes diferentes:
 		- Quando um **Pull Request / Push** para branch "_main_", publicar a imagem com o sufixo _prod (produção)
 		- Quando um **Push** para branch "_dev_", publicar a imagem com o sufixo _homo (homologação/dev)
