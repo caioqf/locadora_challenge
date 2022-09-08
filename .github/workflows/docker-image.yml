@@ -29,6 +29,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
+    environment: docker_envs
     needs: [build] 
     
     steps:
