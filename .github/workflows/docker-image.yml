@@ -1,4 +1,7 @@
 name: Publish Docker image to Docker Hub
+env:
+  REGISTRY_REPO: caioqf
+  IMAGE_NAME: locadora_challenge
 
 on:
   push:
@@ -13,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build Docker image
-      run: docker build -t locadora_challenge:${{github.sha}} .
+      run: docker build -t ${{env.REGISTRY_REPO}}/${{env.IMAGE_NAME}}:${{github.sha}} .
       
   tag:
     runs-on: ubuntu-latest
@@ -22,7 +25,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Tag Docker image
-      run: docker tag locadora_challenge:${{github.sha}} locadora_challenge:${{github.sha}}@latest
+      run: docker tag ${{env.REGISTRY_REPO}}/${{env.IMAGE_NAME}}:${{github.sha}} ${{env.REGISTRY_REPO}}/${{env.IMAGE_NAME}}:${{github.sha}}@latest
       
   publish:
     runs-on: ubuntu-latest
@@ -31,5 +34,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Publish the Docker Image
-      run: docker push docker push caioqf/locadora_challenge:locadora_challenge:${{github.sha}}@latest
+      run: docker push docker push ${{env.REGISTRY_REPO}}/${{env.IMAGE_NAME}}:${{github.sha}}@latest
 
