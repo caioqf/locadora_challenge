@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build Docker image
-      run: docker build -t locadora_challenge:${github.sha} .
+      run: docker build -t locadora_challenge:${{github.sha}} .
       
   tag_and_publish:
     runs-on: ubuntu-latest
@@ -21,9 +21,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Tag Docker image
-      run: docker tag locadora_challenge:${github.sha}@latest
+      run: docker tag locadora_challenge:${{github.sha}}@latest
       
     - uses: actions/checkout@v3
     - name: Publish the Docker Image
-      run: docker push docker push caioqf/locadora_challenge:locadora_challenge:${github.sha}@latest
+      run: docker push docker push caioqf/locadora_challenge:locadora_challenge:${{github.sha}}@latest
 
