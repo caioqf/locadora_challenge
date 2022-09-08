@@ -29,13 +29,15 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    environment: docker_envs
     needs: [build] 
     
     steps:
     - uses: actions/checkout@v3
     - name: login to docker hub
-      run: docker login --username "${{env.DOCKER_USER}}" --password-stdin ${{env.DOCKER_PASS}} 
+      env: 
+        docker_user: ${{secrets.DOCKER_USER}}
+        docker_pass: ${{secret.DOCKER_PASS}
+      run: docker login --username "${{docker_user}}" --password-stdin ${{docker_pass}} 
       
     - uses: actions/checkout@v3
     - name: Publish the Docker Image
